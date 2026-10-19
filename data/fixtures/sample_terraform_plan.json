@@ -1,0 +1,121 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.8.5",
+  "variables": {
+    "environment": {
+      "value": "production"
+    },
+    "db_max_connections": {
+      "value": 50
+    }
+  },
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_db_instance.postgres_primary",
+          "mode": "managed",
+          "type": "aws_db_instance",
+          "name": "postgres_primary",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "values": {
+            "allocated_storage": 100,
+            "engine": "postgres",
+            "instance_class": "db.t4g.small",
+            "max_allocated_storage": 500,
+            "max_connections": 50,
+            "multi_az": false,
+            "identifier": "production-core-db"
+          }
+        },
+        {
+          "address": "aws_elasticache_cluster.redis_cache",
+          "mode": "managed",
+          "type": "aws_elasticache_cluster",
+          "name": "redis_cache",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "values": {
+            "cluster_id": "checkout-session-cache",
+            "engine": "redis",
+            "node_type": "cache.t4g.micro",
+            "num_cache_nodes": 1
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_db_instance.postgres_primary",
+      "module_address": "",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "postgres_primary",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "allocated_storage": 100,
+          "engine": "postgres",
+          "instance_class": "db.r6g.xlarge",
+          "max_allocated_storage": 500,
+          "max_connections": 250,
+          "multi_az": true,
+          "identifier": "production-core-db",
+          "master_password": "REDACTED_SECRET_VALUE"
+        },
+        "after": {
+          "allocated_storage": 100,
+          "engine": "postgres",
+          "instance_class": "db.t4g.small",
+          "max_allocated_storage": 500,
+          "max_connections": 50,
+          "multi_az": false,
+          "identifier": "production-core-db",
+          "master_password": "REDACTED_SECRET_VALUE"
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "master_password": true
+        },
+        "after_sensitive": {
+          "master_password": true
+        }
+      }
+    },
+    {
+      "address": "aws_security_group.db_sg",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "db_sg",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "description": "Controls ingress traffic to database tier",
+          "name": "aurora-pg-sg"
+        },
+        "after": {
+          "description": "Controls ingress traffic to database tier",
+          "name": "aurora-pg-sg"
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_db_instance.postgres_primary",
+          "mode": "managed",
+          "type": "aws_db_instance",
+          "name": "postgres_primary",
+          "provider_config_key": "aws",
+          "depends_on": [
+            "aws_security_group.db_sg"
+          ]
+        }
+      ]
+    }
+  }
+}

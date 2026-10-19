@@ -1,0 +1,56 @@
+% Standalone / Modular TikZ Architecture Diagram for CausalOpsDB-X
+% Can be included in LaTeX documents via: \input{architecture.tikz}
+\begin{tikzpicture}[
+    node distance=1.1cm and 1.2cm,
+    font=\sffamily\footnotesize,
+    box/.style={draw=black!70, rounded corners=4pt, fill=blue!8, inner sep=6pt, text width=3.4cm, align=center, thick, drop shadow={opacity=0.15}},
+    safe/.style={draw=green!60!black, rounded corners=4pt, fill=green!8, inner sep=6pt, text width=3.4cm, align=center, thick, drop shadow={opacity=0.15}},
+    engine/.style={draw=orange!80!black, rounded corners=4pt, fill=orange!8, inner sep=6pt, text width=3.4cm, align=center, thick, drop shadow={opacity=0.15}},
+    store/.style={draw=purple!80!black, rounded corners=4pt, fill=purple!8, inner sep=6pt, text width=3.4cm, align=center, thick, drop shadow={opacity=0.15}},
+    ui/.style={draw=teal!80!black, rounded corners=4pt, fill=teal!8, inner sep=6pt, text width=3.4cm, align=center, thick, drop shadow={opacity=0.15}},
+    arrow/.style={-{Stealth[length=2.5mm,width=1.8mm]}, thick, draw=black!70},
+    darrow/.style={-{Stealth[length=2.5mm,width=1.8mm]}, thick, dashed, draw=blue!70!black},
+    group/.style={draw=black!30, dashed, rounded corners=6pt, inner sep=8pt, fill=black!2}
+]
+
+  % Row 1: Ingestion & Safety Gate
+  \node[box] (iac_input) {\textbf{Terraform Inputs}\\\scriptsize HCL Configurations \&\\Plan JSON (\texttt{terraform show})};
+  \node[safe, right=1.6cm of iac_input] (m1_parser) {\textbf{$M_1$: IaC Parser \& Redactor}\\\scriptsize AST Extraction, Variable Resolution, Confidential Redaction Gate};
+  \node[store, right=1.6cm of m1_parser] (rca_bench) {\textbf{RCAEval Benchmark}\\\scriptsize 735 Empirical Cases\\Parquet Metrics, Traces, Logs};
+
+  % Row 2: Digital Twin Core
+  \node[store, below=1.2cm of m1_parser] (m2_graph) {\textbf{$M_2$: Causal Twin Graph}\\\scriptsize Directed Graph $\mathcal{G} = (\mathcal{V},\mathcal{E},\mathcal{P})$\\Explicit Edge Provenance Tracking};
+  \node[store, below=1.2cm of rca_bench] (m3_telemetry) {\textbf{$M_3$: Telemetry Engine}\\\scriptsize Metric Aggregation ($p_{50}, p_{95}, p_{99}$)\\Sliding Window $Z$-Scores};
+
+  % Row 3: Reasoning & Simulation Engines
+  \node[engine, below=1.2cm of m2_graph] (m4_sim) {\textbf{$M_4$: Counterfactual Engine}\\\scriptsize In-Memory State Clone\\Closed-Form Physics Rules\\Blast Radius Propagation};
+  \node[engine, left=1.6cm of m4_sim] (m6_patterns) {\textbf{$M_6$: Incident Pattern Miner}\\\scriptsize Discretized Event Streams\\Frequent Sequence Mining\\$Z$-score Temporal Windowing};
+  \node[engine, right=1.6cm of m4_sim] (m8_alts) {\textbf{$M_8$: Alternative Comparator}\\\scriptsize Multi-Scenario Simulation\\Pareto Optimization Matrix\\Right-Sized Candidate Ranking};
+
+  % Row 4: Risk & RCA
+  \node[safe, below=1.2cm of m4_sim] (m5_risk) {\textbf{$M_5$: Transparent Risk \& RCA}\\\scriptsize 5-Factor Heuristic Scoring ($w_1..w_5$)\\Root Cause Hypotheses Formulation\\Evidence Grounding Verification};
+
+  % Row 5: Presentation & Auditing
+  \node[ui, below=1.1cm of m5_risk] (m7_console) {\textbf{$M_7$: Engineering Console \& Markdown Audit Exporter}\\\scriptsize Next.js 14 Interactive Topology, Blast Radius Inspector, Zero-Mutation Assurance Report};
+
+  % Edges & Data Flows
+  \draw[arrow] (iac_input) -- (m1_parser) node[midway, above, font=\tiny] {Raw IaC};
+  \draw[arrow] (m1_parser) -- (m2_graph) node[midway, left, font=\tiny] {Resource AST};
+  \draw[arrow] (rca_bench) -- (m3_telemetry) node[midway, right, font=\tiny] {Multi-Modal Signals};
+  \draw[arrow] (m3_telemetry) -- (m2_graph) node[midway, above, font=\tiny] {Service State};
+  \draw[arrow] (m2_graph) -- (m4_sim) node[midway, left, font=\tiny] {Topological State};
+  \draw[arrow] (m3_telemetry) -- (m6_patterns) node[midway, left, font=\tiny] {Metric Streams};
+  \draw[arrow] (m6_patterns) -- (m4_sim) node[midway, above, font=\tiny] {Causal Rules};
+  \draw[arrow] (m4_sim) -- (m8_alts) node[midway, above, font=\tiny] {Sim Outcomes};
+  \draw[arrow] (m4_sim) -- (m5_risk) node[midway, left, font=\tiny] {Calculated Headrooms};
+  \draw[arrow] (m8_alts) |- (m5_risk) node[near end, above, font=\tiny] {Alternative Ranks};
+  \draw[arrow] (m5_risk) -- (m7_console) node[midway, left, font=\tiny] {Audited Evidence};
+
+  % Grouping background annotations
+  \begin{scope}[on background layer]
+    \node[group, fit=(iac_input)(m1_parser)(rca_bench), label={[font=\bfseries\scriptsize, text=black!60]above:INGESTION \& COMPLIANCE LAYER}] {};
+    \node[group, fit=(m2_graph)(m3_telemetry), label={[font=\bfseries\scriptsize, text=black!60]above:CAUSAL TWIN DIGITAL REPOSITORY}] {};
+    \node[group, fit=(m6_patterns)(m4_sim)(m8_alts)(m5_risk), label={[font=\bfseries\scriptsize, text=black!60]left:REASONING \& SIMULATION}] {};
+  \end{scope}
+
+\end{tikzpicture}

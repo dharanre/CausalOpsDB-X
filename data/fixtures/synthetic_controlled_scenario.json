@@ -1,0 +1,49 @@
+{
+  "scenario_id": "synth_db_pool_saturation_001",
+  "name": "E-Commerce Checkout Connection Pool Saturation",
+  "provenance": "SYNTHETIC_CONTROLLED_SCENARIO",
+  "is_synthetic": true,
+  "description": "Controlled intervention scenario: Decreasing database max_connections from 200 to 40 while peak application demand is 140 connections across 4 checkout microservice replicas.",
+  "system_name": "Synthetic Microservices Retail App",
+  "ground_truth_effects": [
+    {
+      "resource_id": "aws_db_instance.postgres_primary",
+      "expected_outcome": "CONNECTION_POOL_EXHAUSTION",
+      "criticality": "HIGH",
+      "metric": "active_connections",
+      "threshold": 40,
+      "projected_peak": 140
+    },
+    {
+      "resource_id": "service.checkoutservice",
+      "expected_outcome": "CASCADING_504_GATEWAY_TIMEOUT",
+      "criticality": "HIGH",
+      "propagation_hop": 1
+    },
+    {
+      "resource_id": "service.frontend",
+      "expected_outcome": "ELEVATED_USER_CHECKOUT_ERRORS",
+      "criticality": "CRITICAL",
+      "propagation_hop": 2
+    }
+  ],
+  "baseline_metrics": {
+    "timestamps": [1685200000, 1685200060, 1685200120, 1685200180, 1685200240, 1685200300],
+    "metrics": {
+      "postgres_active_connections": [85, 92, 110, 118, 135, 140],
+      "postgres_max_connections": [200, 200, 200, 200, 200, 200],
+      "checkoutservice_qps": [450, 480, 520, 560, 590, 610],
+      "checkoutservice_latency_ms": [18.2, 19.5, 21.0, 22.4, 23.8, 24.5],
+      "checkoutservice_error_rate": [0.001, 0.001, 0.002, 0.001, 0.002, 0.002],
+      "frontend_p99_latency_ms": [45.0, 46.2, 48.1, 49.0, 52.3, 53.0]
+    }
+  },
+  "proposed_change": {
+    "resource": "aws_db_instance.postgres_primary",
+    "attribute": "max_connections",
+    "before": 200,
+    "after": 40,
+    "unit": "connections",
+    "reason": "Cost-reduction configuration resize test"
+  }
+}

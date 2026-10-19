@@ -1,0 +1,24 @@
+{
+  "name": "causalopsdb-x",
+  "version": "1.0.0",
+  "description": "Evidence-Grounded Infrastructure Change Intelligence & Counterfactual Simulation",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix frontend start",
+    "backend": "python -m uvicorn backend.app.main:app --reload --port 8000",
+    "test:backend": "pytest backend/tests/test_backend.py -v",
+    "bootstrap": "python backend/scripts/bootstrap_data.py --mode quickstart"
+  },
+  "keywords": [
+    "infrastructure",
+    "counterfactual-simulation",
+    "digital-twin",
+    "terraform",
+    "rcaeval",
+    "causality",
+    "database-reliability"
+  ],
+  "author": "CausalOpsDB-X Engineering Team",
+  "license": "Apache-2.0"
+}

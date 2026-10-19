@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #0B0E12;
+  --bg-panel: #12171D;
+  --bg-surface: #191F27;
+  --border-color: #28313A;
+  --text-primary: #E9EEF2;
+  --text-secondary: #98A5B3;
+  --accent-lime: #C7F36B;
+  --accent-cyan: #64D8F5;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom technical scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0E12;
+}
+::-webkit-scrollbar-thumb {
+  background: #28313A;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3B4754;
+}
+
+/* React Flow Custom Overrides for graphite theme */
+.react-flow__background {
+  background-color: #0B0E12 !important;
+}
+.react-flow__controls {
+  background-color: #12171D !important;
+  border: 1px solid #28313A !important;
+  border-radius: 6px;
+}
+.react-flow__controls button {
+  background-color: #191F27 !important;
+  border-bottom: 1px solid #28313A !important;
+  color: #E9EEF2 !important;
+  fill: #E9EEF2 !important;
+}
+.react-flow__controls button:hover {
+  background-color: #28313A !important;
+}
+.react-flow__attribution {
+  display: none;
+}
